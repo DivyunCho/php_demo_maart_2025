@@ -4,7 +4,7 @@ $errorcode = 0;
 
 
 function connect_db() {
-    $pdo = new PDO("mysql:host=localhost;dbname=gastenboek", "gastenboek", "gastenboek");
+    $pdo = new PDO("mysql:host=localhost;dbname=dbgast", "gastenboek", "gastenboek");
     return $pdo;
 }
 
@@ -18,7 +18,7 @@ function insert_user($u,$a) : bool {
         }
 
         $pdo = connect_db();
-        $stmt = $pdo->prepare("INSERT INTO `user` (`name`, `age`) VALUES (?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO `user` (`name`, `Age`) VALUES (?, ?)");
         $stmt->bindParam(1, $u);
         $stmt->bindParam(2, $a);
         $result = $stmt->execute();
