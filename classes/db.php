@@ -10,7 +10,7 @@ class db
 
     private $pdo;
     private $host = "localhost";
-    private $dbname = "gastenboek";
+    private $dbname = "dbgast";
     private $dbuser = "gastenboek";
     private $dbpass = "gastenboek";
 
@@ -58,6 +58,21 @@ class db
         return $result;
     }
 
+    public function register ($name, $age, $password){
+     try{
+        $stmt = $this->pdo->prepare("INSERT INTO `user` (`name`, `age`, `password`) VALUES (?, ?, ?)");
+        $stmt->bindParam(1, $name);
+        $stmt->bindParam(2, $age); 
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $stmt->bindParam(3, $hashed_password);
+        $result = $stmt->execute(); //true/false
+     } catch (PDOException $e) {
+         echo "Error: " . $e->getMessage();
+         $result = false;
+     }
+     return $result;
+    }
+    
     public function hello_world()
     {
         return "Hello world";

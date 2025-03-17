@@ -1,53 +1,63 @@
 <?php
-require("classes/db.php");
 
-    // ben ik aan het registeren???
-    if(isset($_POST['submit'])){
-       // post vars uitlezen
-       $username = $_POST['username'];
-       $password1 = $_POST['password1'];
-       $password2 = $_POST['password2'];
+if (isset($_POST['submit'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $password2 = $_POST['password2'];
 
-        // check of de wachtwoorden gelijk zijn
-        if($password1 != $password2){
-            echo "<a href=\"register.php\">Wachtwoorden zijn niet gelijk</a>";
-            exit;
+    // Check if passwords match
+    if ($password === $password2) {
+        exit;
+        // Add user to the database (this part is not implemented in your code)
+        try {
+            $db = new PDO('mysql:host=localhost;dbname=dbgast', 'gastenboek', 'gastenboek');
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
         }
-        // zo ja, dan registreren -> naar login
-        //iets met de dabase
-        $db = new db();
-        $age = 50;
-        if($db->register_user($username, $age,$password1)) {
-            // naar login
-            header("Location: login.php");
 
+        if ($db->connect_error) {
+            die("Connection failed: " . $db->connect_error);
+        }
+
+        $username = $db->real_escape_string($username);
+        $password = password_hash($password, PASSWORD_BCRYPT);
+
+        $sql = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
+
+        if ($db->query($sql) === TRUE) {
+            echo "New record created successfully";
         } else {
-            echo "<a href=\"register.php\">User niet geregistreerd</a>";
+            echo "Error: " . $sql . "<br>" . $db->error;
         }
 
+        $db->close();
 
-       
-        // zo nee, registeren
-
-       
+        // Redirect to login page
+        header("Location: login.php");
+        exit();
+    } else {
+        echo "Passwords do not match.";
     }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Register</title>
 </head>
 <body>
-    <h1>Register</h1>
-    <form method="post" action="register.php">
-        <input type="text" name="username" placeholder="Username">
-        <input type="password" name="password1" placeholder="password">
-        <input type="password" name="password2" placeholder="retype password">
-        <input type="submit" name="submit" value="Register">
-    </form>
-    <p>inloggen?</p>
-    <a href="login.php">Login</a>
+
+<h1>Register</h1>
+<form method="post">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="password" name="password2" placeholder="Retype Password" required>
+    <button type="submit" name="submit">Register</button>
+</form>
+
 </body>
 </html>

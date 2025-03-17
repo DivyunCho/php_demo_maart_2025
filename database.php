@@ -6,7 +6,7 @@ $errorcode = 0;
 
 
 function connect_db() : PDO {
-    $pdo = new PDO("mysql:host=localhost;dbname=gastenboek", "gastenboek", "gastenboek");
+    $pdo = new PDO("mysql:host=localhost;dbname=dbgast", "gastenboek", "gastenboek");
     return $pdo;
 }
 

@@ -7,9 +7,11 @@
 //require("database.php");
 
 require("classes/db.php");
+
 $db = new db(); // instance van de class maken -> object
 
-//$db->get_users();
+
+//var_dump($db->get_users());
 //echo $db->hello_world();
 //echo $db->message("Hello world too");
 
